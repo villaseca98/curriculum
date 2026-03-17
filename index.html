@@ -27,6 +27,24 @@
             overflow: hidden;
         }
 
+        /* --- BOTÓN MENÚ MÓVIL --- */
+        #menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1100;
+            background: var(--blue-neon);
+            color: black;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--blue-glow);
+        }
+
         /* SIDEBAR WITH CIRCULAR PROFILE */
         nav {
             width: 300px;
@@ -36,11 +54,12 @@
             flex-direction: column;
             padding: 40px 25px;
             box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease; /* Para animación móvil */
+            z-index: 1050;
         }
 
         .profile-container { text-align: center; margin-bottom: 50px; }
         
-        /* EL MARCO PERFECTO */
         .profile-circle {
             width: 130px; height: 130px;
             margin: 0 auto 20px;
@@ -55,12 +74,10 @@
             background-color: #000;
         }
         
-        /* AJUSTE DE ENCUADRE CORREGIDO */
         .profile-circle img {
             width: 100%; height: 100%;
             object-fit: cover;
             border-radius: 50%;
-            /* Ajustado para que se vea el pelo y los hombros como en tu ejemplo */
             transform: scale(1.1); 
             transform-origin: center 25%; 
         }
@@ -72,6 +89,7 @@
             cursor: pointer; border-radius: 4px; transition: 0.4s;
             display: flex; align-items: center; margin-bottom: 12px;
             text-transform: uppercase; letter-spacing: 1px;
+            text-align: left;
         }
         .nav-link i { margin-right: 15px; color: var(--blue-neon); font-size: 1.2rem; }
         .nav-link:hover, .nav-link.active {
@@ -100,11 +118,28 @@
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; } 
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; } 
         
+        /* --- MEDIA QUERIES (MÓVIL) --- */
         @media (max-width: 1400px) {
             .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
         }
+
         @media (max-width: 900px) {
+            body { flex-direction: column; overflow: visible; }
+            #menu-toggle { display: block; } /* Mostrar botón */
+            
+            nav {
+                position: fixed;
+                left: 0; top: 0;
+                height: 100vh;
+                width: 280px;
+                transform: translateX(-100%); /* Escondido por defecto */
+            }
+            nav.active { transform: translateX(0); } /* Mostrar al pulsar */
+
+            .viewport { padding: 80px 20px 40px; }
             .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .modal-content { width: 90%; padding: 20px; margin: 20% auto; }
+            h2 { font-size: 1.5rem; }
         }
 
         .module {
@@ -140,7 +175,7 @@
         .btn-visit:hover { box-shadow: 0 0 15px var(--blue-glow); opacity: 0.9; }
 
         .modal {
-            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+            display: none; position: fixed; z-index: 2000; left: 0; top: 0;
             width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
         }
         .modal-content {
@@ -158,7 +193,9 @@
 </head>
 <body>
 
-    <nav>
+    <button id="menu-toggle" onclick="toggleMenu()">☰ MENU</button>
+
+    <nav id="sidebar">
         <div class="profile-container">
             <div class="profile-circle">
                 <img src="yo.jpg" alt="Guillermo Villaseca">
@@ -299,6 +336,17 @@
                         <a href="https://mindstead.io" target="_blank" class="btn btn-visit">Visit Site</a>
                     </div>
                 </div>
+
+                <div class="module">
+                    <div class="project-frame"><img src="placeholder.png" alt="Land of Waves"></div>
+                    <span class="tag">Marketing</span>
+                    <h3>landofwaves.es</h3>
+                    <p style="font-size: 0.9rem;">Multi-page website for Surf Camps in Portugal.</p>
+                    <div class="btn-group">
+                        <button class="btn btn-details" onclick="openModal('modalWaves')">Details</button>
+                        <a href="https://wave-makers-paradise.lovable.app" target="_blank" class="btn btn-visit">Visit Site</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -329,7 +377,24 @@
         </div>
     </div>
 
+    <div id="modalWaves" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modalWaves')">&times;</span>
+            <h2>LAND OF WAVES SPECS</h2>
+            <ul class="feature-list">
+                <li><strong>Objetivo:</strong> Landing page optimizada para conversión de reservas.</li>
+                <li><strong>UX:</strong> Diseño fluido centrado en imágenes de alta calidad del campamento.</li>
+                <li><strong>Mobile First:</strong> Adaptabilidad total para usuarios que reservan desde el móvil.</li>
+                <li><strong>Performance:</strong> Tiempos de carga mínimos para mejorar el SEO local.</li>
+            </ul>
+        </div>
+    </div>
+
     <script>
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tab-content");
@@ -344,6 +409,11 @@
             document.getElementById(tabName).style.display = "block";
             setTimeout(() => { document.getElementById(tabName).classList.add("active"); }, 50);
             evt.currentTarget.classList.add("active");
+
+            // Cerrar menú al hacer click en un link (en móvil)
+            if (window.innerWidth <= 900) {
+                toggleMenu();
+            }
         }
 
         function openModal(id) { document.getElementById(id).style.display = "block"; }
