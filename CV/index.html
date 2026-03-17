@@ -19,7 +19,6 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* Ajuste de body para que permita scroll en móvil/pdf */
         body {
             background-color: var(--bg-dark);
             color: var(--text-silver);
@@ -27,6 +26,21 @@
             display: flex;
             height: 100vh;
             overflow: hidden;
+        }
+
+        /* BOTÓN DE MENÚ MÓVIL */
+        #menu-toggle {
+            display:none; 
+            position: fixed; 
+            top: 20px; left: 20px; 
+            z-index: 300; 
+            background: var(--blue-neon); 
+            color: black; 
+            border: none; 
+            padding: 10px 15px; 
+            border-radius: 4px; 
+            font-family: 'Orbitron', sans-serif;
+            cursor:pointer;
         }
 
         /* SIDEBAR */
@@ -39,7 +53,8 @@
             padding: 40px 25px;
             box-shadow: 10px 0 30px rgba(0,0,0,0.5);
             flex-shrink: 0;
-            z-index: 100;
+            z-index: 200;
+            transition: transform 0.3s ease;
         }
 
         .profile-container { text-align: center; margin-bottom: 50px; }
@@ -62,7 +77,6 @@
             transform-origin: center 25%; 
         }
 
-        /* Enlaces tipo A para que el PDF funcione */
         .nav-link {
             text-decoration: none;
             background: transparent; border: 1px solid transparent;
@@ -80,7 +94,6 @@
             box-shadow: 0 0 15px var(--blue-glow);
         }
 
-        /* VIEWPORT */
         .viewport {
             flex: 1;
             padding: 60px;
@@ -92,27 +105,37 @@
         .tab-content { display: none; animation: slideIn 0.5s ease forwards; }
         .tab-content.active { display: block; }
 
-        /* --- MEDIA QUERIES PARA MÓVIL Y PDF --- */
         @media (max-width: 900px), print {
             body { 
                 flex-direction: column; 
                 height: auto; 
                 overflow: visible; 
             }
+
+            #menu-toggle { display: block; }
+
             nav { 
-                width: 100%; 
-                height: auto; 
-                position: relative; 
-                border-right: none; 
-                border-bottom: 2px solid var(--border);
-                padding: 20px;
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 250px;
+                transform: translateX(-100%);
+                z-index: 250;
+                padding: 40px 20px;
+                border-right: 2px solid var(--border);
+                box-shadow: 5px 0 30px rgba(0,0,0,0.5);
+                background: var(--panel-bg);
             }
+
+            nav.show { transform: translateX(0); }
+
             .viewport { 
                 height: auto; 
                 overflow: visible; 
                 padding: 40px 20px; 
             }
-            /* Hacemos que todas las secciones sean visibles en el PDF para poder navegar */
+
             .tab-content { 
                 display: block !important; 
                 opacity: 1 !important;
@@ -121,6 +144,7 @@
                 border-bottom: 1px solid var(--border);
                 padding-bottom: 40px;
             }
+
             .grid-3, .grid-4 { grid-template-columns: 1fr !important; }
         }
 
@@ -169,7 +193,9 @@
 </head>
 <body>
 
-    <nav>
+    <button id="menu-toggle">☰ Menu</button>
+
+    <nav id="sidebar">
         <div class="profile-container">
             <div class="profile-circle">
                 <img src="yo.jpg" alt="Guillermo Villaseca">
@@ -185,170 +211,179 @@
     </nav>
 
     <div class="viewport">
-        
-        <div id="info" class="tab-content active">
-            <h2>> SYSTEM_INITIALIZATION</h2>
-            <div class="module" style="margin-bottom: 25px;">
-                <h3>MISSION & CORE COMPETENCIES</h3>
-                <p style="line-height: 1.8;">
-                    I am a results-oriented <strong>Web Application Developer</strong>. Through my Higher Degree (DAW), I have mastered the end-to-end lifecycle of software development, specializing in building high-performance digital products. My technical foundation is built on:
-                </p>
-                <ul class="feature-list">
-                    <li><strong>Web Architecture:</strong> Mastery of frontend and backend integration using Java, SQL, and modern JavaScript frameworks.</li>
-                    <li><strong>Product Engineering:</strong> Solid understanding of UX/UI principles, database optimization, and scalable server-side logic.</li>
-                    <li><strong>AI Implementation:</strong> Expert use of <strong>Claude Code</strong> and MCP protocols to accelerate deployment cycles.</li>
-                </ul>
-            </div>
+       <div id="info" class="tab-content active">
+<h2>> SYSTEM_INITIALIZATION</h2>
+<div class="module" style="margin-bottom: 25px;">
+<h3>MISSION & CORE COMPETENCIES</h3>
+<p style="line-height: 1.8;">
+I am a results-oriented <strong>Web Application Developer</strong>. Through my Higher Degree (DAW), I have mastered the end-to-end lifecycle of software development, specializing in building high-performance digital products. My technical foundation is built on:
+</p>
+<ul class="feature-list">
+<li><strong>Web Architecture:</strong> Mastery of frontend and backend integration using Java, SQL, and modern JavaScript frameworks.</li>
+<li><strong>Product Engineering:</strong> Solid understanding of UX/UI principles, database optimization, and scalable server-side logic.</li>
+<li><strong>AI Implementation:</strong> Expert use of <strong>Claude Code</strong> and MCP protocols to accelerate deployment cycles.</li>
+</ul>
+</div>
 
-            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px;">
-                <div class="module">
-                    <h3>EDUCATION & TECHNICAL LOGS</h3>
-                    <ul class="feature-list">
-                        <li><strong>MEDAC:</strong> Higher Technician in Web Application Development (DAW).</li>
-                        <li><strong>Claude Code in Action:</strong> Specialist certification in AI-assisted programming.</li>
-                        <li><strong>AWS Skill Builder:</strong> Cloud Architecture and Infrastructure deployment.</li>
-                    </ul>
-                </div>
-                <div class="module">
-                    <h3>CORE IDENTIFICATION</h3>
-                    <ul class="feature-list">
-                        <li><strong>Location:</strong> Jerez de la Frontera, Spain.</li>
-                        <li><strong>D.O.B:</strong> September 7, 1998</li>
-                        <li><strong>Email:</strong> Villaseca.managements@gmail.com</li>
-                        <li><strong>Comms:</strong> +34 609 960 601</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+<div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px;">
+<div class="module">
+<h3>EDUCATION & TECHNICAL LOGS</h3>
+<ul class="feature-list">
+<li><strong>MEDAC:</strong> Higher Technician in Web Application Development (DAW).</li>
+<li><strong>Claude Code in Action:</strong> Specialist certification in AI-assisted programming.</li>
+<li><strong>AWS Skill Builder:</strong> Cloud Architecture and Infrastructure deployment.</li>
+</ul>
+</div>
+<div class="module">
+<h3>CORE IDENTIFICATION</h3>
+<ul class="feature-list">
+<li><strong>Location:</strong> Jerez de la Frontera, Spain.</li>
+<li><strong>D.O.B:</strong> September 7, 1998</li>
+<li><strong>Email:</strong> Villaseca.managements@gmail.com</li>
+<li><strong>Comms:</strong> +34 609 960 601</li>
+</ul>
+</div>
+</div>
+</div>
 
-        <div id="services" class="tab-content">
-            <h2>> OPERATIONAL_SERVICES</h2>
-            <div class="grid-4"> 
-                <div class="module">
-                    <i class="fas fa-robot" style="font-size: 2rem; color: var(--blue-neon); margin-bottom: 15px;"></i>
-                    <h3>AI AGENT ARCHITECTURE</h3>
-                    <p>Design and deployment of autonomous agents for intelligent web maintenance and automated SEO.</p>
-                </div>
-                <div class="module">
-                    <i class="fas fa-laptop-code" style="font-size: 2rem; color: var(--blue-neon); margin-bottom: 15px;"></i>
-                    <h3>SAAS ENGINEERING</h3>
-                    <p>Full-stack development of Software as a Service platforms using React, TypeScript, and Supabase.</p>
-                </div>
-                <div class="module">
-                    <i class="fas fa-chart-line" style="font-size: 2rem; color: var(--blue-neon); margin-bottom: 15px;"></i>
-                    <h3>SEO & UX STRATEGY</h3>
-                    <p>Optimizing products for conversion and visibility through data-driven design and technical SEO audits.</p>
-                </div>
-                <div class="module">
-                    <i class="fas fa-database" style="font-size: 2rem; color: var(--blue-neon); margin-bottom: 15px;"></i>
-                    <h3>DATA ANALYTICS & INSIGHTS</h3>
-                    <p>Leveraging Python and Big Data tools to extract actionable business insights from user metrics.</p>
-                </div>
-            </div>
-        </div>
+<div id="services" class="tab-content">
+<h2>> OPERATIONAL_SERVICES</h2>
+<div class="grid-4"> 
+<div class="module">
+<i class="fas fa-robot" style="font-size: 2rem; color: var(--blue-neon); margin-bottom: 15px;"></i>
+<h3>AI AGENT ARCHITECTURE</h3>
+<p>Design and deployment of autonomous agents for intelligent web maintenance and automated SEO.</p>
+</div>
+<div class="module">
+<i class="fas fa-laptop-code" style="font-size: 2rem; color: var(--blue-neon); margin-bottom: 15px;"></i>
+<h3>SAAS ENGINEERING</h3>
+<p>Full-stack development of Software as a Service platforms using React, TypeScript, and Supabase.</p>
+</div>
+<div class="module">
+<i class="fas fa-chart-line" style="font-size: 2rem; color: var(--blue-neon); margin-bottom: 15px;"></i>
+<h3>SEO & UX STRATEGY</h3>
+<p>Optimizing products for conversion and visibility through data-driven design and technical SEO audits.</p>
+</div>
+<div class="module">
+<i class="fas fa-database" style="font-size: 2rem; color: var(--blue-neon); margin-bottom: 15px;"></i>
+<h3>DATA ANALYTICS & INSIGHTS</h3>
+<p>Leveraging Python and Big Data tools to extract actionable business insights from user metrics.</p>
+</div>
+</div>
+</div>
 
-        <div id="aptitudes" class="tab-content">
-            <h2>> TECHNICAL_STRENGTHS</h2>
-            <div class="grid-3"> 
-                <div class="module">
-                    <h3>FRONTEND & BACKEND</h3>
-                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
-                        <span class="tag">React.js</span><span class="tag">TypeScript</span>
-                        <span class="tag">Java</span><span class="tag">Node.js</span>
-                        <span class="tag">Supabase</span><span class="tag">PostgreSQL</span>
-                        <span class="tag">SQL</span><span class="tag">Spring Boot</span>
-                    </div>
-                </div>
-                <div class="module">
-                    <h3>MAKE WORKFLOWS</h3>
-                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
-                        <span class="tag">Automation Workflows</span><span class="tag">Machine Learning</span>
-                        <span class="tag">MCP Commands</span><span class="tag">RSS</span>
-                        <span class="tag">Google Tools)</span>
-                    </div>
-                </div>
-                <div class="module">
-                    <h3>AI & AUTOMATION</h3>
-                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
-                        <span class="tag">Claude Code</span><span class="tag">Machine Learning</span>
-                        <span class="tag">MCP Commands</span><span class="tag">Python</span>
-                        <span class="tag">GitHub Actions (CI/CD)</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div id="aptitudes" class="tab-content">
+<h2>> TECHNICAL_STRENGTHS</h2>
+<div class="grid-3"> 
+<div class="module">
+<h3>FRONTEND & BACKEND</h3>
+<div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
+<span class="tag">React.js</span><span class="tag">TypeScript</span>
+<span class="tag">Java</span><span class="tag">Node.js</span>
+<span class="tag">Supabase</span><span class="tag">PostgreSQL</span>
+<span class="tag">SQL</span><span class="tag">Spring Boot</span>
+</div>
+</div>
+<div class="module">
+<h3>MAKE WORKFLOWS</h3>
+<div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
+<span class="tag">Automation Workflows</span><span class="tag">Machine Learning</span>
+<span class="tag">MCP Commands</span><span class="tag">RSS</span>
+<span class="tag">Google Tools)</span>
+</div>
+</div>
+<div class="module">
+<h3>AI & AUTOMATION</h3>
+<div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
+<span class="tag">Claude Code</span><span class="tag">Machine Learning</span>
+<span class="tag">MCP Commands</span><span class="tag">Python</span>
+<span class="tag">GitHub Actions (CI/CD)</span>
+</div>
+</div>
+</div>
+</div>
 
-        <div id="portfolio" class="tab-content">
-            <h2>> PROJECT_DEPLOYMENTS</h2>
-            <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px;">
-                <div class="module">
-                    <div class="project-frame"><img src="nikol.png" alt="Nikol"></div>
-                    <span class="tag">AI SaaS</span>
-                    <h3>nikol / m3whub.es</h3>
-                    <p style="font-size: 0.9rem;">Autonomous AI Operator for comprehensive website maintenance.</p>
-                    <div class="btn-group">
-                        <button class="btn btn-details" onclick="openModal('modalNikol')">Details</button>
-                        <a href="https://m3whub.es" target="_blank" class="btn btn-visit">Visit Site</a>
-                    </div>
-                </div>
+<div id="portfolio" class="tab-content">
+<h2>> PROJECT_DEPLOYMENTS</h2>
+<div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px;">
+<div class="module">
+<div class="project-frame"><img src="nikol.png" alt="Nikol"></div>
+<span class="tag">AI SaaS</span>
+<h3>nikol / m3whub.es</h3>
+<p style="font-size: 0.9rem;">Autonomous AI Operator for comprehensive website maintenance.</p>
+<div class="btn-group">
+<button class="btn btn-details" onclick="openModal('modalNikol')">Details</button>
+<a href="https://m3whub.es" target="_blank" class="btn btn-visit">Visit Site</a>
+</div>
+</div>
 
-                <div class="module">
-                    <div class="project-frame"><img src="mindstead.png" alt="Mindstead"></div>
-                    <span class="tag">Productivity</span>
-                    <h3>mindstead.io</h3>
-                    <p style="font-size: 0.9rem;">Wellness platform built with modular architecture.</p>
-                    <div class="btn-group">
-                        <button class="btn btn-details" onclick="openModal('modalMindstead')">Details</button>
-                        <a href="https://mindstead.io" target="_blank" class="btn btn-visit">Visit Site</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="module">
+<div class="project-frame"><img src="mindstead.png" alt="Mindstead"></div>
+<span class="tag">Productivity</span>
+<h3>mindstead.io</h3>
+<p style="font-size: 0.9rem;">Wellness platform built with modular architecture.</p>
+<div class="btn-group">
+<button class="btn btn-details" onclick="openModal('modalMindstead')">Details</button>
+<a href="https://mindstead.io" target="_blank" class="btn btn-visit">Visit Site</a>
+</div>
+</div>
+</div>
+</div>
+</div>
 
-    <div id="modalNikol" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('modalNikol')">&times;</span>
-            <h2>NIKOL TECHNICAL SPECS</h2>
-            <ul class="feature-list">
-                <li><strong>Core Function:</strong> AI-as-a-Service for autonomous web management.</li>
-                <li><strong>Integration:</strong> Seamless connection with GitHub and Supabase.</li>
-                <li><strong>Control System:</strong> Safe changes through strict permission management and real-time logs.</li>
-                <li><strong>Tech Stack:</strong> Built on React, Node.js, and advanced scraping engines.</li>
-            </ul>
-        </div>
-    </div>
+<div id="modalNikol" class="modal">
+<div class="modal-content">
+<span class="close" onclick="closeModal('modalNikol')">&times;</span>
+<h2>NIKOL TECHNICAL SPECS</h2>
+<ul class="feature-list">
+<li><strong>Core Function:</strong> AI-as-a-Service for autonomous web management.</li>
+<li><strong>Integration:</strong> Seamless connection with GitHub and Supabase.</li>
+<li><strong>Control System:</strong> Safe changes through strict permission management and real-time logs.</li>
+<li><strong>Tech Stack:</strong> Built on React, Node.js, and advanced scraping engines.</li>
+</ul>
+</div>
+</div>
 
-    <div id="modalMindstead" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('modalMindstead')">&times;</span>
-            <h2>MINDSTEAD TECHNICAL SPECS</h2>
-            <ul class="feature-list">
-                <li><strong>Strategy:</strong> High-authority SEO architecture for global mental wellness audience.</li>
-                <li><strong>Content:</strong> Automated weekly publishing cycles powered by custom AI workflows.</li>
-                <li><strong>Architecture:</strong> Fully modular HTML/CSS/JS frontend designed for low latency.</li>
-                <li><strong>Data:</strong> Insights-driven design focused on user productivity metrics.</li>
-            </ul>
-        </div>
+<div id="modalMindstead" class="modal">
+<div class="modal-content">
+<span class="close" onclick="closeModal('modalMindstead')">&times;</span>
+<h2>MINDSTEAD TECHNICAL SPECS</h2>
+<ul class="feature-list">
+<li><strong>Strategy:</strong> High-authority SEO architecture for global mental wellness audience.</li>
+<li><strong>Content:</strong> Automated weekly publishing cycles powered by custom AI workflows.</li>
+<li><strong>Architecture:</strong> Fully modular HTML/CSS/JS frontend designed for low latency.</li>
+<li><strong>Data:</strong> Insights-driven design focused on user productivity metrics.</li>
+</ul>
+</div>
+</div>
+
     </div>
 
     <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('show');
+        });
+
         function openTab(evt, tabName) {
-            // Solo ejecuta la lógica de tabs si la pantalla es grande
-            if (window.innerWidth > 900) {
-                var i, tabcontent, tablinks;
-                tabcontent = document.getElementsByClassName("tab-content");
-                for (i = 0; i < tabcontent.length; i++) {
-                    tabcontent[i].classList.remove("active");
-                    tabcontent[i].style.display = "none";
-                }
-                tablinks = document.getElementsByClassName("nav-link");
-                for (i = 0; i < tablinks.length; i++) {
-                    tablinks[i].classList.remove("active");
-                }
-                document.getElementById(tabName).style.display = "block";
-                setTimeout(() => { document.getElementById(tabName).classList.add("active"); }, 50);
-                evt.currentTarget.classList.add("active");
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("nav-link");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabName).style.display = "block";
+            setTimeout(() => { document.getElementById(tabName).classList.add("active"); }, 50);
+            evt.currentTarget.classList.add("active");
+
+            if (window.innerWidth <= 900) {
+                sidebar.classList.remove('show');
             }
         }
 
