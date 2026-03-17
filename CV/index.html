@@ -36,6 +36,7 @@
             flex-direction: column;
             padding: 40px 25px;
             box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+            flex-shrink: 0;
         }
 
         .profile-container { text-align: center; margin-bottom: 50px; }
@@ -65,7 +66,9 @@
             transform-origin: center 25%; 
         }
 
+        /* CAMBIO A ENLACES PARA COMPATIBILIDAD PDF */
         .nav-link {
+            text-decoration: none; /* Añadido para quitar subrayado */
             background: transparent; border: 1px solid transparent;
             color: var(--text-silver); width: 100%; padding: 18px;
             font-family: 'Orbitron', sans-serif; font-size: 0.85rem;
@@ -103,8 +106,21 @@
         @media (max-width: 1400px) {
             .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
         }
+
+        /* --- NUEVO AJUSTE MÓVIL --- */
         @media (max-width: 900px) {
+            body { flex-direction: column; overflow: auto; }
+            nav { 
+                width: 100%; 
+                height: auto; 
+                border-right: none; 
+                border-bottom: 2px solid var(--border); 
+                padding: 20px;
+            }
+            .profile-container { margin-bottom: 20px; }
+            .profile-circle { width: 80px; height: 80px; }
             .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .viewport { padding: 30px 20px; }
         }
 
         .module {
@@ -167,10 +183,10 @@
             <p style="color: var(--blue-neon); font-size: 0.75rem; letter-spacing: 2px; margin-top: 5px;">WEB APP DEVELOPER</p>
         </div>
         
-        <button class="nav-link active" onclick="openTab(event, 'info')"><i class="fas fa-database"></i> Information</button>
-        <button class="nav-link" onclick="openTab(event, 'services')"><i class="fas fa-server"></i> Services</button>
-        <button class="nav-link" onclick="openTab(event, 'aptitudes')"><i class="fas fa-stream"></i> Aptitudes</button>
-        <button class="nav-link" onclick="openTab(event, 'portfolio')"><i class="fas fa-code"></i> Portfolio</button>
+        <a href="#info" class="nav-link active" onclick="openTab(event, 'info')"><i class="fas fa-database"></i> Information</a>
+        <a href="#services" class="nav-link" onclick="openTab(event, 'services')"><i class="fas fa-server"></i> Services</a>
+        <a href="#aptitudes" class="nav-link" onclick="openTab(event, 'aptitudes')"><i class="fas fa-stream"></i> Aptitudes</a>
+        <a href="#portfolio" class="nav-link" onclick="openTab(event, 'portfolio')"><i class="fas fa-code"></i> Portfolio</a>
     </nav>
 
     <div class="viewport">
@@ -331,6 +347,7 @@
 
     <script>
         function openTab(evt, tabName) {
+            // Esto se mantiene para la web interactiva
             var i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tab-content");
             for (i = 0; i < tabcontent.length; i++) {
