@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guillermo Villaseca | AI & Web Solutions</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #02040a;
+            --panel-bg: #0d1117;
+            --blue-neon: #00d2ff;
+            --blue-glow: rgba(0, 210, 255, 0.4);
+            --text-silver: #c9d1d9;
+            --border: rgba(0, 210, 255, 0.2);
+            --modal-bg: rgba(13, 17, 23, 0.98);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-silver);
+            font-family: 'Rajdhani', sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* SIDEBAR WITH CIRCULAR PROFILE */
+        nav {
+            width: 300px;
+            background: var(--panel-bg);
+            border-right: 2px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 40px 25px;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+        }
+
+        .profile-container { text-align: center; margin-bottom: 50px; }
+        
+        /* EL MARCO PERFECTO */
+        .profile-circle {
+            width: 130px; height: 130px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            border: 3px solid var(--blue-neon);
+            padding: 0;
+            box-shadow: 0 0 20px var(--blue-glow);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #000;
+        }
+        
+        /* AJUSTE DE ENCUADRE CORREGIDO */
+        .profile-circle img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            /* Ajustado para que se vea el pelo y los hombros como en tu ejemplo */
+            transform: scale(1.1); 
+            transform-origin: center 25%; 
+        }
+
+        .nav-link {
+            background: transparent; border: 1px solid transparent;
+            color: var(--text-silver); width: 100%; padding: 18px;
+            font-family: 'Orbitron', sans-serif; font-size: 0.85rem;
+            cursor: pointer; border-radius: 4px; transition: 0.4s;
+            display: flex; align-items: center; margin-bottom: 12px;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .nav-link i { margin-right: 15px; color: var(--blue-neon); font-size: 1.2rem; }
+        .nav-link:hover, .nav-link.active {
+            background: rgba(0, 210, 255, 0.05);
+            border-color: var(--blue-neon);
+            color: white;
+            box-shadow: 0 0 15px var(--blue-glow);
+        }
+
+        /* VIEWPORT */
+        .viewport {
+            flex: 1;
+            padding: 60px;
+            overflow-y: auto;
+            background: radial-gradient(circle at top right, #001a33 0%, #02040a 100%);
+        }
+
+        .tab-content { display: none; animation: slideIn 0.5s ease forwards; }
+        .tab-content.active { display: block; }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+
+        h2 { font-family: 'Orbitron', sans-serif; font-size: 2rem; margin-bottom: 35px; color: white; border-left: 4px solid var(--blue-neon); padding-left: 15px; }
+        h3 { font-family: 'Orbitron', sans-serif; color: var(--blue-neon); margin-bottom: 15px; font-size: 1.1rem; text-transform: uppercase; }
+
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; } 
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; } 
+        
+        @media (max-width: 1400px) {
+            .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 900px) {
+            .grid-3, .grid-4 { grid-template-columns: 1fr; }
+        }
+
+        .module {
+            background: rgba(13, 17, 23, 0.8);
+            border: 1px solid var(--border);
+            padding: 25px; border-radius: 4px;
+            transition: 0.3s;
+        }
+        .module:hover { border-color: var(--blue-neon); box-shadow: 0 0 20px rgba(0, 210, 255, 0.1); }
+
+        .feature-list { list-style: none; margin-top: 10px; }
+        .feature-list li { margin-bottom: 12px; padding-left: 20px; position: relative; font-size: 0.95rem; line-height: 1.5; }
+        .feature-list li::before { content: "›"; position: absolute; left: 0; color: var(--blue-neon); font-weight: bold; font-size: 1.2rem; }
+
+        .project-frame {
+            width: 100%; height: 200px; border: 1px solid var(--border);
+            border-radius: 4px; overflow: hidden; margin-bottom: 20px;
+            background: #000;
+        }
+        .project-frame img { width: 100%; height: 100%; object-fit: cover; }
+
+        .tag { font-size: 0.7rem; color: var(--blue-neon); border: 1px solid var(--blue-neon); padding: 3px 10px; border-radius: 2px; text-transform: uppercase; margin-right: 5px; margin-bottom: 5px; display: inline-block;}
+
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        .btn {
+            flex: 1; padding: 10px; border-radius: 4px; cursor: pointer;
+            font-family: 'Orbitron', sans-serif; font-size: 0.7rem; text-align: center;
+            text-decoration: none; transition: 0.3s; text-transform: uppercase;
+        }
+        .btn-details { background: transparent; border: 1px solid var(--blue-neon); color: var(--blue-neon); }
+        .btn-details:hover { background: var(--blue-neon); color: black; }
+        .btn-visit { background: var(--blue-neon); border: 1px solid var(--blue-neon); color: black; }
+        .btn-visit:hover { box-shadow: 0 0 15px var(--blue-glow); opacity: 0.9; }
+
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: var(--modal-bg); margin: 5% auto; padding: 40px;
+            border: 1px solid var(--blue-neon); width: 60%; max-width: 800px;
+            border-radius: 8px; position: relative; animation: slideIn 0.3s;
+            max-height: 80vh; overflow-y: auto;
+        }
+        .close { color: white; position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer; }
+        .close:hover { color: var(--blue-neon); }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: var(--blue-neon); }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="profile-container">
+            <div class="profile-circle">
+                <img src="yo.jpg" alt="Guillermo Villaseca">
+            </div>
+            <h1 style="font-family:'Orbitron'; font-size: 1.1rem; color: white;">GUILLERMO VILLASECA</h1>
+            <p style="color: var(--blue-neon); font-size: 0.75rem; letter-spacing: 2px; margin-top: 5px;">WEB APP DEVELOPER</p>
+        </div>
+        
+        <button class="nav-link active" onclick="openTab(event, 'info')"><i class="fas fa-database"></i> Information</button>
+        <button class="nav-link" onclick="openTab(event, 'services')"><i class="fas fa-server"></i> Services</button>
+        <button class="nav-link" onclick="openTab(event, 'aptitudes')"><i class="fas fa-stream"></i> Aptitudes</button>
+        <button class="nav-link" onclick="openTab(event, 'portfolio')"><i class="fas fa-code"></i> Portfolio</button>
+    </nav>
+
+    <div class="viewport">
+        
+        <div id="info" class="tab-content active">
+            <h2>> SYSTEM_INITIALIZATION</h2>
+            <div class="module" style="margin-bottom: 25px;">
+                <h3>MISSION & CORE COMPETENCIES</h3>
+                <p style="line-height: 1.8;">
+                    I am a results-oriented <strong>Web Application Developer</strong>. Through my Higher Degree (DAW), I have mastered the end-to-end lifecycle of software development, specializing in building high-performance digital products. My technical foundation is built on:
+                </p>
+                <ul class="feature-list">
+                    <li><strong>Web Architecture:</strong> Mastery of frontend and backend integration using Java, SQL, and modern JavaScript frameworks.</li>
+                    <li><strong>Product Engineering:</strong> Solid understanding of UX/UI principles, database optimization, and scalable server-side logic.</li>
+                    <li><strong>AI Implementation:</strong> Expert use of <strong>Claude Code</strong> and MCP protocols to accelerate deployment cycles.</li>
+                </ul>
+            </div>
+
+            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px;">
+                <div class="module">
+                    <h3>EDUCATION & TECHNICAL LOGS</h3>
+                    <ul class="feature-list">
+                        <li><strong>MEDAC:</strong> Higher Technician in Web Application Development (DAW).</li>
+                        <li><strong>Claude Code in Action:</strong> Specialist certification in AI-assisted programming.</li>
+                        <li><strong>AWS Skill Builder:</strong> Cloud Architecture and Infrastructure deployment.</li>
+                    </ul>
+                </div>
+                <div class="module">
+                    <h3>CORE IDENTIFICATION</h3>
+                    <ul class="feature-list">
+                        <li><strong>Location:</strong> Jerez de la Frontera, Spain.</li>
+                        <li><strong>D.O.B:</strong> September 7, 1998</li>
+                        <li><strong>Email:</strong> Villaseca.managements@gmail.com</li>
+                        <li><strong>Comms:</strong> +34 609 960 601</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="services" class="tab-content">
+            <h2>> OPERATIONAL_SERVICES</h2>
+            <div class="grid-4"> 
+                <div class="module">
+                    <i class="fas fa-robot" style="font-size: 2rem; color: var(--blue-neon); margin-bottom: 15px;"></i>
+                    <h3>AI AGENT ARCHITECTURE</h3>
+                    <p>Design and deployment of autonomous agents for intelligent web maintenance and automated SEO.</p>
+                </div>
+                <div class="module">
+                    <i class="fas fa-laptop-code" style="font-size: 2rem; color: var(--blue-neon); margin-bottom: 15px;"></i>
+                    <h3>SAAS ENGINEERING</h3>
+                    <p>Full-stack development of Software as a Service platforms using React, TypeScript, and Supabase.</p>
+                </div>
+                <div class="module">
+                    <i class="fas fa-chart-line" style="font-size: 2rem; color: var(--blue-neon); margin-bottom: 15px;"></i>
+                    <h3>SEO & UX STRATEGY</h3>
+                    <p>Optimizing products for conversion and visibility through data-driven design and technical SEO audits.</p>
+                </div>
+                <div class="module">
+                    <i class="fas fa-database" style="font-size: 2rem; color: var(--blue-neon); margin-bottom: 15px;"></i>
+                    <h3>DATA ANALYTICS & INSIGHTS</h3>
+                    <p>Leveraging Python and Big Data tools to extract actionable business insights from user metrics.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="aptitudes" class="tab-content">
+            <h2>> TECHNICAL_STRENGTHS</h2>
+            <div class="grid-3"> 
+                <div class="module">
+                    <h3>FRONTEND & BACKEND</h3>
+                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
+                        <span class="tag">React.js</span><span class="tag">TypeScript</span>
+                        <span class="tag">Java</span><span class="tag">Node.js</span>
+                        <span class="tag">Supabase</span><span class="tag">PostgreSQL</span>
+                        <span class="tag">SQL</span><span class="tag">Spring Boot</span>
+                    </div>
+                </div>
+                <div class="module">
+                    <h3>MAKE WORKFLOWS</h3>
+                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
+                        <span class="tag">Automation Workflows</span><span class="tag">Machine Learning</span>
+                        <span class="tag">MCP Commands</span><span class="tag">RSS</span>
+                        <span class="tag">Google Tools)</span>
+                    </div>
+                </div>
+                <div class="module">
+                    <h3>AI & AUTOMATION</h3>
+                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
+                        <span class="tag">Claude Code</span><span class="tag">Machine Learning</span>
+                        <span class="tag">MCP Commands</span><span class="tag">Python</span>
+                        <span class="tag">GitHub Actions (CI/CD)</span>
+                    </div>
+                </div>
+                <div class="module">
+                    <h3>BUSINESS SKILLS</h3>
+                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
+                        <span class="tag">Technical SEO</span><span class="tag">UX Design</span>
+                        <span class="tag">Project Management</span><span class="tag">SaaS Strategy</span>
+                        <span class="tag">Agile (SCRUM)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="portfolio" class="tab-content">
+            <h2>> PROJECT_DEPLOYMENTS</h2>
+            <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px;">
+                <div class="module">
+                    <div class="project-frame"><img src="nikol.png" alt="Nikol"></div>
+                    <span class="tag">AI SaaS</span>
+                    <h3>nikol / m3whub.es</h3>
+                    <p style="font-size: 0.9rem;">Autonomous AI Operator for comprehensive website maintenance.</p>
+                    <div class="btn-group">
+                        <button class="btn btn-details" onclick="openModal('modalNikol')">Details</button>
+                        <a href="https://m3whub.es" target="_blank" class="btn btn-visit">Visit Site</a>
+                    </div>
+                </div>
+
+                <div class="module">
+                    <div class="project-frame"><img src="mindstead.png" alt="Mindstead"></div>
+                    <span class="tag">Productivity</span>
+                    <h3>mindstead.io</h3>
+                    <p style="font-size: 0.9rem;">Wellness platform built with modular architecture.</p>
+                    <div class="btn-group">
+                        <button class="btn btn-details" onclick="openModal('modalMindstead')">Details</button>
+                        <a href="https://mindstead.io" target="_blank" class="btn btn-visit">Visit Site</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalNikol" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modalNikol')">&times;</span>
+            <h2>NIKOL TECHNICAL SPECS</h2>
+            <ul class="feature-list">
+                <li><strong>Core Function:</strong> AI-as-a-Service for autonomous web management.</li>
+                <li><strong>Integration:</strong> Seamless connection with GitHub and Supabase.</li>
+                <li><strong>Control System:</strong> Safe changes through strict permission management and real-time logs.</li>
+                <li><strong>Tech Stack:</strong> Built on React, Node.js, and advanced scraping engines.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="modalMindstead" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modalMindstead')">&times;</span>
+            <h2>MINDSTEAD TECHNICAL SPECS</h2>
+            <ul class="feature-list">
+                <li><strong>Strategy:</strong> High-authority SEO architecture for global mental wellness audience.</li>
+                <li><strong>Content:</strong> Automated weekly publishing cycles powered by custom AI workflows.</li>
+                <li><strong>Architecture:</strong> Fully modular HTML/CSS/JS frontend designed for low latency.</li>
+                <li><strong>Data:</strong> Insights-driven design focused on user productivity metrics.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("nav-link");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabName).style.display = "block";
+            setTimeout(() => { document.getElementById(tabName).classList.add("active"); }, 50);
+            evt.currentTarget.classList.add("active");
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = "block"; }
+        function closeModal(id) { document.getElementById(id).style.display = "none"; }
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') { event.target.style.display = "none"; }
+        }
+    </script>
+</body>
+</html>
