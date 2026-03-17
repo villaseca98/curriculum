@@ -18,6 +18,8 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* Ajuste de body para que permita scroll en móvil/pdf */
         body {
             background-color: var(--bg-dark);
             color: var(--text-silver);
@@ -27,7 +29,7 @@
             overflow: hidden;
         }
 
-        /* SIDEBAR WITH CIRCULAR PROFILE */
+        /* SIDEBAR */
         nav {
             width: 300px;
             background: var(--panel-bg);
@@ -37,38 +39,32 @@
             padding: 40px 25px;
             box-shadow: 10px 0 30px rgba(0,0,0,0.5);
             flex-shrink: 0;
+            z-index: 100;
         }
 
         .profile-container { text-align: center; margin-bottom: 50px; }
         
-        /* EL MARCO PERFECTO */
         .profile-circle {
             width: 130px; height: 130px;
             margin: 0 auto 20px;
             border-radius: 50%;
             border: 3px solid var(--blue-neon);
-            padding: 0;
             box-shadow: 0 0 20px var(--blue-glow);
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             background-color: #000;
         }
         
-        /* AJUSTE DE ENCUADRE CORREGIDO */
         .profile-circle img {
             width: 100%; height: 100%;
             object-fit: cover;
-            border-radius: 50%;
-            /* Ajustado para que se vea el pelo y los hombros como en tu ejemplo */
             transform: scale(1.1); 
             transform-origin: center 25%; 
         }
 
-        /* CAMBIO A ENLACES PARA COMPATIBILIDAD PDF */
+        /* Enlaces tipo A para que el PDF funcione */
         .nav-link {
-            text-decoration: none; /* Añadido para quitar subrayado */
+            text-decoration: none;
             background: transparent; border: 1px solid transparent;
             color: var(--text-silver); width: 100%; padding: 18px;
             font-family: 'Orbitron', sans-serif; font-size: 0.85rem;
@@ -90,10 +86,43 @@
             padding: 60px;
             overflow-y: auto;
             background: radial-gradient(circle at top right, #001a33 0%, #02040a 100%);
+            scroll-behavior: smooth;
         }
 
         .tab-content { display: none; animation: slideIn 0.5s ease forwards; }
         .tab-content.active { display: block; }
+
+        /* --- MEDIA QUERIES PARA MÓVIL Y PDF --- */
+        @media (max-width: 900px), print {
+            body { 
+                flex-direction: column; 
+                height: auto; 
+                overflow: visible; 
+            }
+            nav { 
+                width: 100%; 
+                height: auto; 
+                position: relative; 
+                border-right: none; 
+                border-bottom: 2px solid var(--border);
+                padding: 20px;
+            }
+            .viewport { 
+                height: auto; 
+                overflow: visible; 
+                padding: 40px 20px; 
+            }
+            /* Hacemos que todas las secciones sean visibles en el PDF para poder navegar */
+            .tab-content { 
+                display: block !important; 
+                opacity: 1 !important;
+                transform: none !important;
+                margin-bottom: 80px;
+                border-bottom: 1px solid var(--border);
+                padding-bottom: 40px;
+            }
+            .grid-3, .grid-4 { grid-template-columns: 1fr !important; }
+        }
 
         @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
@@ -102,34 +131,12 @@
 
         .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; } 
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; } 
-        
-        @media (max-width: 1400px) {
-            .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        /* --- NUEVO AJUSTE MÓVIL --- */
-        @media (max-width: 900px) {
-            body { flex-direction: column; overflow: auto; }
-            nav { 
-                width: 100%; 
-                height: auto; 
-                border-right: none; 
-                border-bottom: 2px solid var(--border); 
-                padding: 20px;
-            }
-            .profile-container { margin-bottom: 20px; }
-            .profile-circle { width: 80px; height: 80px; }
-            .grid-3, .grid-4 { grid-template-columns: 1fr; }
-            .viewport { padding: 30px 20px; }
-        }
 
         .module {
             background: rgba(13, 17, 23, 0.8);
             border: 1px solid var(--border);
             padding: 25px; border-radius: 4px;
-            transition: 0.3s;
         }
-        .module:hover { border-color: var(--blue-neon); box-shadow: 0 0 20px rgba(0, 210, 255, 0.1); }
 
         .feature-list { list-style: none; margin-top: 10px; }
         .feature-list li { margin-bottom: 12px; padding-left: 20px; position: relative; font-size: 0.95rem; line-height: 1.5; }
@@ -137,8 +144,7 @@
 
         .project-frame {
             width: 100%; height: 200px; border: 1px solid var(--border);
-            border-radius: 4px; overflow: hidden; margin-bottom: 20px;
-            background: #000;
+            border-radius: 4px; overflow: hidden; margin-bottom: 20px; background: #000;
         }
         .project-frame img { width: 100%; height: 100%; object-fit: cover; }
 
@@ -151,22 +157,11 @@
             text-decoration: none; transition: 0.3s; text-transform: uppercase;
         }
         .btn-details { background: transparent; border: 1px solid var(--blue-neon); color: var(--blue-neon); }
-        .btn-details:hover { background: var(--blue-neon); color: black; }
         .btn-visit { background: var(--blue-neon); border: 1px solid var(--blue-neon); color: black; }
-        .btn-visit:hover { box-shadow: 0 0 15px var(--blue-glow); opacity: 0.9; }
 
-        .modal {
-            display: none; position: fixed; z-index: 1000; left: 0; top: 0;
-            width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
-        }
-        .modal-content {
-            background: var(--modal-bg); margin: 5% auto; padding: 40px;
-            border: 1px solid var(--blue-neon); width: 60%; max-width: 800px;
-            border-radius: 8px; position: relative; animation: slideIn 0.3s;
-            max-height: 80vh; overflow-y: auto;
-        }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); }
+        .modal-content { background: var(--modal-bg); margin: 5% auto; padding: 40px; border: 1px solid var(--blue-neon); width: 60%; max-width: 800px; border-radius: 8px; position: relative; max-height: 80vh; overflow-y: auto; }
         .close { color: white; position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer; }
-        .close:hover { color: var(--blue-neon); }
 
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: var(--blue-neon); }
@@ -280,20 +275,12 @@
                         <span class="tag">GitHub Actions (CI/CD)</span>
                     </div>
                 </div>
-                <div class="module">
-                    <h3>BUSINESS SKILLS</h3>
-                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
-                        <span class="tag">Technical SEO</span><span class="tag">UX Design</span>
-                        <span class="tag">Project Management</span><span class="tag">SaaS Strategy</span>
-                        <span class="tag">Agile (SCRUM)</span>
-                    </div>
-                </div>
             </div>
         </div>
 
         <div id="portfolio" class="tab-content">
             <h2>> PROJECT_DEPLOYMENTS</h2>
-            <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px;">
+            <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px;">
                 <div class="module">
                     <div class="project-frame"><img src="nikol.png" alt="Nikol"></div>
                     <span class="tag">AI SaaS</span>
@@ -347,27 +334,26 @@
 
     <script>
         function openTab(evt, tabName) {
-            // Esto se mantiene para la web interactiva
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].classList.remove("active");
-                tabcontent[i].style.display = "none";
+            // Solo ejecuta la lógica de tabs si la pantalla es grande
+            if (window.innerWidth > 900) {
+                var i, tabcontent, tablinks;
+                tabcontent = document.getElementsByClassName("tab-content");
+                for (i = 0; i < tabcontent.length; i++) {
+                    tabcontent[i].classList.remove("active");
+                    tabcontent[i].style.display = "none";
+                }
+                tablinks = document.getElementsByClassName("nav-link");
+                for (i = 0; i < tablinks.length; i++) {
+                    tablinks[i].classList.remove("active");
+                }
+                document.getElementById(tabName).style.display = "block";
+                setTimeout(() => { document.getElementById(tabName).classList.add("active"); }, 50);
+                evt.currentTarget.classList.add("active");
             }
-            tablinks = document.getElementsByClassName("nav-link");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].classList.remove("active");
-            }
-            document.getElementById(tabName).style.display = "block";
-            setTimeout(() => { document.getElementById(tabName).classList.add("active"); }, 50);
-            evt.currentTarget.classList.add("active");
         }
 
         function openModal(id) { document.getElementById(id).style.display = "block"; }
         function closeModal(id) { document.getElementById(id).style.display = "none"; }
-        window.onclick = function(event) {
-            if (event.target.className === 'modal') { event.target.style.display = "none"; }
-        }
     </script>
 </body>
 </html>
