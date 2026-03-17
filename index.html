@@ -1,426 +1,391 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guillermo Villaseca | AI & Web Solutions</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>GUILLERMO VILLASECA | ARCHITECT_OS_V4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@300;500&family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/feather-icons"></script>
     <style>
         :root {
-            --bg-dark: #02040a;
-            --panel-bg: #0d1117;
-            --blue-neon: #00d2ff;
-            --blue-glow: rgba(0, 210, 255, 0.4);
-            --text-silver: #c9d1d9;
-            --border: rgba(0, 210, 255, 0.2);
-            --modal-bg: rgba(13, 17, 23, 0.98);
+            --bg-deep: #02040a;
+            --accent: #00f2ff;
+            --glass: rgba(10, 15, 25, 0.85);
+            --font-cyber: 'Orbitron', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-silver);
-            font-family: 'Rajdhani', sans-serif;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
+        .sec-info { --accent: #00f2ff; }
+        .sec-services { --accent: #bc13fe; }
+        .sec-aptitudes { --accent: #39ff14; }
+        .sec-portfolio { --accent: #ffae00; }
 
-        /* --- BOTÓN MENÚ MÓVIL --- */
-        #menu-toggle {
-            display: none;
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1100;
-            background: var(--blue-neon);
-            color: black;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 0 10px var(--blue-glow);
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+        body { background: var(--bg-deep); color: #e2e8f0; font-family: 'Space Grotesk', sans-serif; overflow: hidden; display: flex; height: 100vh; }
 
-        /* SIDEBAR WITH CIRCULAR PROFILE */
-        nav {
-            width: 300px;
-            background: var(--panel-bg);
-            border-right: 2px solid var(--border);
-            display: flex;
-            flex-direction: column;
-            padding: 40px 25px;
-            box-shadow: 10px 0 30px rgba(0,0,0,0.5);
-            transition: transform 0.3s ease; /* Para animación móvil */
-            z-index: 1050;
-        }
+        /* --- BACKGROUND & CURSOR --- */
+        #bg-canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.15; pointer-events: none; }
+        #custom-cursor { width: 20px; height: 20px; border: 2px solid var(--accent); border-radius: 50%; position: fixed; pointer-events: none; z-index: 9999; box-shadow: 0 0 15px var(--accent); transition: transform 0.1s ease; }
 
-        .profile-container { text-align: center; margin-bottom: 50px; }
+        /* --- SIDEBAR --- */
+        .sidebar { width: 320px; background: rgba(2, 4, 10, 0.95); border-right: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; padding: 40px 25px; z-index: 100; flex-shrink: 0; }
+        .profile-area { text-align: center; margin-bottom: 40px; }
+        .avatar-frame { width: 140px; height: 140px; margin: 0 auto 20px; position: relative; clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%); border: 2px solid var(--accent); overflow: hidden; }
+        .avatar-frame img { width: 100%; height: 100%; object-fit: cover; filter:(1) contrast(1.2); }
+        .nav-menu { list-style: none; }
+        .nav-item a { color: #555; text-decoration: none; font-family: var(--font-cyber); font-size: 0.75rem; letter-spacing: 2px; display: flex; align-items: center; gap: 15px; padding: 18px; transition: var(--transition); }
+        .nav-item a:hover, .nav-item a.active { color: var(--accent); text-shadow: 0 0 10px var(--accent); background: rgba(255,255,255,0.02); }
+
+        /* --- MULTI-PAGE SYSTEM --- */
+        .main-container { flex-grow: 1; position: relative; overflow-y: auto; padding: 60px 6%; scroll-behavior: smooth; }
+        .page-module { display: none; animation: pageIn 0.5s ease forwards; }
+        .page-module.active { display: block; }
+        @keyframes pageIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .section-title { font-family: var(--font-cyber); font-size: 3rem; margin-bottom: 50px; text-transform: uppercase; letter-spacing: -2px; }
+        .section-title span { color: var(--accent); text-shadow: 0 0 20px var(--accent); }
+
+        /* --- CARDS & HUD --- */
+        .cyber-card { background: var(--glass); border: 1px solid rgba(255,255,255,0.05); padding: 30px; position: relative; margin-bottom: 25px; overflow: hidden; }
+        .cyber-card::before { content: 'SYSTEM_LOG'; position: absolute; top: 5px; right: 10px; font-family: var(--font-code); font-size: 9px; color: var(--accent); opacity: 0.6; }
+        .scan-line { position: absolute; top: -100%; left: 0; width: 100%; height: 2px; background: var(--accent); box-shadow: 0 0 15px var(--accent); opacity: 0.2; animation: scan 6s linear infinite; }
+        @keyframes scan { 0% { top: -10%; } 100% { top: 110%; } }
+
+        /* --- SERVICES SPECIFIC --- */
+        .service-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        .service-icon { color: var(--accent); margin-bottom: 20px; filter: drop-shadow(0 0 5px var(--accent)); }
+
+        /* --- APTITUDES REINVENTED --- */
+        .aptitude-item { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 60px; align-items: center; position: relative; }
+        .viewport { position: relative; aspect-ratio: 16/9; background: #000; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; }
+        .viewport img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; transition: 0.5s; }
+        .aptitude-item:hover .viewport img { opacity: 0.9; transform: scale(1.05); }
         
-        .profile-circle {
-            width: 130px; height: 130px;
-            margin: 0 auto 20px;
-            border-radius: 50%;
-            border: 3px solid var(--blue-neon);
-            padding: 0;
-            box-shadow: 0 0 20px var(--blue-glow);
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #000;
+        /* The Legend (The fold-out info) */
+        .aptitude-legend { 
+            position: absolute; right: -20px; top: 50%; transform: translateY(-50%) translateX(20px);
+            width: 200px; padding: 15px; background: var(--accent); color: #000;
+            font-family: var(--font-code); font-size: 0.7rem; opacity: 0; pointer-events: none;
+            transition: var(--transition); clip-path: polygon(0 0, 100% 0, 100% 85%, 85% 100%, 0 100%);
         }
-        
-        .profile-circle img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-            transform: scale(1.1); 
-            transform-origin: center 25%; 
+        .aptitude-item:hover .aptitude-legend { opacity: 1; transform: translateY(-50%) translateX(0); }
+
+        .tag-cloud { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+        .tag { border: 1px solid var(--accent); color: var(--accent); padding: 4px 10px; font-family: var(--font-code); font-size: 0.65rem; text-transform: uppercase; }
+
+        /* --- MOBILE HUD --- */
+        .mobile-hud { display: none; position: fixed; bottom: 0; width: 100%; background: #050810; border-top: 2px solid var(--accent); z-index: 1000; justify-content: space-around; padding: 15px; }
+
+        @media (max-width: 1024px) {
+            .sidebar { display: none; }
+            .mobile-hud { display: flex; }
+            body { flex-direction: column; }
+            .main-container { margin-left: 0; padding-bottom: 100px; width: 100%; overflow-y: auto; }
+            .aptitude-item { grid-template-columns: 1fr; }
+            .aptitude-legend { display: none; }
         }
-
-        .nav-link {
-            background: transparent; border: 1px solid transparent;
-            color: var(--text-silver); width: 100%; padding: 18px;
-            font-family: 'Orbitron', sans-serif; font-size: 0.85rem;
-            cursor: pointer; border-radius: 4px; transition: 0.4s;
-            display: flex; align-items: center; margin-bottom: 12px;
-            text-transform: uppercase; letter-spacing: 1px;
-            text-align: left;
-        }
-        .nav-link i { margin-right: 15px; color: var(--blue-neon); font-size: 1.2rem; }
-        .nav-link:hover, .nav-link.active {
-            background: rgba(0, 210, 255, 0.05);
-            border-color: var(--blue-neon);
-            color: white;
-            box-shadow: 0 0 15px var(--blue-glow);
-        }
-
-        /* VIEWPORT */
-        .viewport {
-            flex: 1;
-            padding: 60px;
-            overflow-y: auto;
-            background: radial-gradient(circle at top right, #001a33 0%, #02040a 100%);
-        }
-
-        .tab-content { display: none; animation: slideIn 0.5s ease forwards; }
-        .tab-content.active { display: block; }
-
-        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-
-        h2 { font-family: 'Orbitron', sans-serif; font-size: 2rem; margin-bottom: 35px; color: white; border-left: 4px solid var(--blue-neon); padding-left: 15px; }
-        h3 { font-family: 'Orbitron', sans-serif; color: var(--blue-neon); margin-bottom: 15px; font-size: 1.1rem; text-transform: uppercase; }
-
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; } 
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; } 
-        
-        /* --- MEDIA QUERIES (MÓVIL) --- */
-        @media (max-width: 1400px) {
-            .grid-3, .grid-4 { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        @media (max-width: 900px) {
-            body { flex-direction: column; overflow: visible; }
-            #menu-toggle { display: block; } /* Mostrar botón */
-            
-            nav {
-                position: fixed;
-                left: 0; top: 0;
-                height: 100vh;
-                width: 280px;
-                transform: translateX(-100%); /* Escondido por defecto */
-            }
-            nav.active { transform: translateX(0); } /* Mostrar al pulsar */
-
-            .viewport { padding: 80px 20px 40px; }
-            .grid-3, .grid-4 { grid-template-columns: 1fr; }
-            .modal-content { width: 90%; padding: 20px; margin: 20% auto; }
-            h2 { font-size: 1.5rem; }
-        }
-
-        .module {
-            background: rgba(13, 17, 23, 0.8);
-            border: 1px solid var(--border);
-            padding: 25px; border-radius: 4px;
-            transition: 0.3s;
-        }
-        .module:hover { border-color: var(--blue-neon); box-shadow: 0 0 20px rgba(0, 210, 255, 0.1); }
-
-        .feature-list { list-style: none; margin-top: 10px; }
-        .feature-list li { margin-bottom: 12px; padding-left: 20px; position: relative; font-size: 0.95rem; line-height: 1.5; }
-        .feature-list li::before { content: "›"; position: absolute; left: 0; color: var(--blue-neon); font-weight: bold; font-size: 1.2rem; }
-
-        .project-frame {
-            width: 100%; height: 200px; border: 1px solid var(--border);
-            border-radius: 4px; overflow: hidden; margin-bottom: 20px;
-            background: #000;
-        }
-        .project-frame img { width: 100%; height: 100%; object-fit: cover; }
-
-        .tag { font-size: 0.7rem; color: var(--blue-neon); border: 1px solid var(--blue-neon); padding: 3px 10px; border-radius: 2px; text-transform: uppercase; margin-right: 5px; margin-bottom: 5px; display: inline-block;}
-
-        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
-        .btn {
-            flex: 1; padding: 10px; border-radius: 4px; cursor: pointer;
-            font-family: 'Orbitron', sans-serif; font-size: 0.7rem; text-align: center;
-            text-decoration: none; transition: 0.3s; text-transform: uppercase;
-        }
-        .btn-details { background: transparent; border: 1px solid var(--blue-neon); color: var(--blue-neon); }
-        .btn-details:hover { background: var(--blue-neon); color: black; }
-        .btn-visit { background: var(--blue-neon); border: 1px solid var(--blue-neon); color: black; }
-        .btn-visit:hover { box-shadow: 0 0 15px var(--blue-glow); opacity: 0.9; }
-
-        .modal {
-            display: none; position: fixed; z-index: 2000; left: 0; top: 0;
-            width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
-        }
-        .modal-content {
-            background: var(--modal-bg); margin: 5% auto; padding: 40px;
-            border: 1px solid var(--blue-neon); width: 60%; max-width: 800px;
-            border-radius: 8px; position: relative; animation: slideIn 0.3s;
-            max-height: 80vh; overflow-y: auto;
-        }
-        .close { color: white; position: absolute; right: 20px; top: 15px; font-size: 28px; cursor: pointer; }
-        .close:hover { color: var(--blue-neon); }
-
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: var(--blue-neon); }
     </style>
 </head>
-<body>
+<body class="sec-info">
 
-    <button id="menu-toggle" onclick="toggleMenu()">☰ MENU</button>
+    <canvas id="bg-canvas"></canvas>
+    <div id="custom-cursor"></div>
 
-    <nav id="sidebar">
-        <div class="profile-container">
-            <div class="profile-circle">
+    <nav class="sidebar">
+        <div class="profile-area">
+            <div class="avatar-frame">
                 <img src="yo.jpg" alt="Guillermo Villaseca">
             </div>
-            <h1 style="font-family:'Orbitron'; font-size: 1.1rem; color: white;">GUILLERMO VILLASECA</h1>
-            <p style="color: var(--blue-neon); font-size: 0.75rem; letter-spacing: 2px; margin-top: 5px;">WEB APP DEVELOPER</p>
+            <h2 style="font-family: var(--font-cyber); font-size: 0.9rem;">GUILLERMO VILLASECA</h2>
+            <p style="font-family: var(--font-code); font-size: 0.6rem; color: var(--accent); margin-top: 5px;">WEB_APP_DEVELOPER_OS</p>
         </div>
-        
-        <button class="nav-link active" onclick="openTab(event, 'info')"><i class="fas fa-database"></i> Information</button>
-        <button class="nav-link" onclick="openTab(event, 'services')"><i class="fas fa-server"></i> Services</button>
-        <button class="nav-link" onclick="openTab(event, 'aptitudes')"><i class="fas fa-stream"></i> Aptitudes</button>
-        <button class="nav-link" onclick="openTab(event, 'portfolio')"><i class="fas fa-code"></i> Portfolio</button>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="#info" class="active" onclick="showPage('info')"><i data-feather="terminal"></i> INITIALIZATION</a></li>
+            <li class="nav-item"><a href="#services" onclick="showPage('services')"><i data-feather="cpu"></i> SERVICES</a></li>
+            <li class="nav-item"><a href="#aptitudes" onclick="showPage('aptitudes')"><i data-feather="zap"></i> APTITUDES</a></li>
+            <li class="nav-item"><a href="#portfolio" onclick="showPage('portfolio')"><i data-feather="code"></i> DEPLOYMENTS</a></li>
+        </ul>
     </nav>
 
-    <div class="viewport">
-        
-        <div id="info" class="tab-content active">
-            <h2>> SYSTEM_INITIALIZATION</h2>
-            <div class="module" style="margin-bottom: 25px;">
-                <h3>MISSION & CORE COMPETENCIES</h3>
-                <p style="line-height: 1.8;">
+    <main class="main-container">
+        <section id="info" class="page-module active">
+            <h1 class="section-title">> SYSTEM_<span>INITIALIZATION</span></h1>
+            
+            <div class="cyber-card">
+                <div class="scan-line"></div>
+                <h3 style="font-family: var(--font-cyber); margin-bottom: 15px; color: var(--accent);">MISSION & CORE COMPETENCIES</h3>
+                <p style="line-height: 1.6; color: #ccc; margin-bottom: 20px;">
                     I am a results-oriented <strong>Web Application Developer</strong>. Through my Higher Degree (DAW), I have mastered the end-to-end lifecycle of software development, specializing in building high-performance digital products. My technical foundation is built on:
                 </p>
-                <ul class="feature-list">
-                    <li><strong>Web Architecture:</strong> Mastery of frontend and backend integration using Java, SQL, and modern JavaScript frameworks.</li>
-                    <li><strong>Product Engineering:</strong> Solid understanding of UX/UI principles, database optimization, and scalable server-side logic.</li>
-                    <li><strong>AI Implementation:</strong> Expert use of <strong>Claude Code</strong> and MCP protocols to accelerate deployment cycles.</li>
+                <ul style="list-style: none; padding-left: 0; font-size: 0.9rem; color: #ccc;">
+                    <li style="margin-bottom: 10px;"><span style="color: var(--accent); margin-right: 8px;">></span><strong>Web Architecture:</strong> Mastery of frontend and backend integration using Java, SQL, and modern JavaScript frameworks.</li>
+                    <li style="margin-bottom: 10px;"><span style="color: var(--accent); margin-right: 8px;">></span><strong>Product Engineering:</strong> Solid understanding of UX/UI principles, database optimization, and scalable server-side logic.</li>
+                    <li><span style="color: var(--accent); margin-right: 8px;">></span><strong>AI Implementation:</strong> Expert use of <strong>Claude Code</strong> and MCP protocols to accelerate deployment cycles.</li>
                 </ul>
             </div>
-
-            <div class="grid-2" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px;">
-                <div class="module">
-                    <h3>EDUCATION & TECHNICAL LOGS</h3>
-                    <ul class="feature-list">
-                        <li><strong>MEDAC:</strong> Higher Technician in Web Application Development (DAW).</li>
-                        <li><strong>Claude Code in Action:</strong> Specialist certification in AI-assisted programming.</li>
-                        <li><strong>AWS Skill Builder:</strong> Cloud Architecture and Infrastructure deployment.</li>
-                    </ul>
+    
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px;" class="grid-mob">
+                <div class="cyber-card">
+                    <h4 style="color: var(--accent); margin-bottom: 15px; font-family: var(--font-cyber);">EDUCATION & TECHNICAL LOGS</h4>
+                    <p style="font-size: 0.85rem; margin-bottom: 12px; color: #ccc;"><span style="color: var(--accent); margin-right: 5px;">></span><strong>MEDAC:</strong> Higher Technician in Web Application Development (DAW).</p>
+                    <p style="font-size: 0.85rem; margin-bottom: 12px; color: #ccc;"><span style="color: var(--accent); margin-right: 5px;">></span><strong>Claude Code in Action:</strong> Specialist certification in AI-assisted programming.</p>
+                    <p style="font-size: 0.85rem; color: #ccc;"><span style="color: var(--accent); margin-right: 5px;">></span><strong>AWS Skill Builder:</strong> Cloud Architecture and Infrastructure deployment.</p>
                 </div>
-                <div class="module">
-                    <h3>CORE IDENTIFICATION</h3>
-                    <ul class="feature-list">
-                        <li><strong>Location:</strong> Jerez de la Frontera, Spain.</li>
-                        <li><strong>D.O.B:</strong> September 7, 1998</li>
-                        <li><strong>Email:</strong> Villaseca.managements@gmail.com</li>
-                        <li><strong>Comms:</strong> +34 609 960 601</li>
-                    </ul>
+    
+                <div class="cyber-card">
+                    <h4 style="color: var(--accent); margin-bottom: 15px; font-family: var(--font-cyber);">CORE IDENTIFICATION</h4>
+                    <div style="font-family: var(--font-code); font-size: 0.85rem; color: #ccc; line-height: 1.8;">
+                        <p><span style="color: var(--accent); margin-right: 5px;">></span><strong>Location:</strong> Jerez de la Frontera, Spain.</p>
+                        <p><span style="color: var(--accent); margin-right: 5px;">></span><strong>D.O.B:</strong> September 7, 1998</p>
+                        <p><span style="color: var(--accent); margin-right: 5px;">></span><strong>Email:</strong> Villaseca.managements@gmail.com</p>
+                        <p><span style="color: var(--accent); margin-right: 5px;">></span><strong>Comms:</strong> +34 609 960 601</p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div id="services" class="tab-content">
-            <h2>> OPERATIONAL_SERVICES</h2>
-            <div class="grid-4"> 
-                <div class="module">
-                    <i class="fas fa-robot" style="font-size: 2rem; color: var(--blue-neon); margin-bottom: 15px;"></i>
+        <section id="services" class="page-module">
+            <h1 class="section-title">OPERATIONAL_<span>SERVICES</span></h1>
+            <div class="service-grid">
+                <div class="cyber-card">
+                    <div class="scan-line"></div>
+                    <i data-feather="cpu" class="service-icon"></i>
                     <h3>AI AGENT ARCHITECTURE</h3>
-                    <p>Design and deployment of autonomous agents for intelligent web maintenance and automated SEO.</p>
+                    <p style="font-size: 0.9rem; margin-top: 10px;">Design and deployment of autonomous agents for intelligent web maintenance and automated SEO optimization cycles.</p>
                 </div>
-                <div class="module">
-                    <i class="fas fa-laptop-code" style="font-size: 2rem; color: var(--blue-neon); margin-bottom: 15px;"></i>
+                <div class="cyber-card">
+                    <div class="scan-line"></div>
+                    <i data-feather="layout" class="service-icon"></i>
                     <h3>SAAS ENGINEERING</h3>
-                    <p>Full-stack development of Software as a Service platforms using React, TypeScript, and Supabase.</p>
+                    <p style="font-size: 0.9rem; margin-top: 10px;">Full-stack development of Software as a Service platforms using React, TypeScript, and Supabase for high scalability.</p>
                 </div>
-                <div class="module">
-                    <i class="fas fa-chart-line" style="font-size: 2rem; color: var(--blue-neon); margin-bottom: 15px;"></i>
+                <div class="cyber-card">
+                    <div class="scan-line"></div>
+                    <i data-feather="trending-up" class="service-icon"></i>
                     <h3>SEO & UX STRATEGY</h3>
-                    <p>Optimizing products for conversion and visibility through data-driven design and technical SEO audits.</p>
+                    <p style="font-size: 0.9rem; margin-top: 10px;">Optimizing products for conversion and visibility through data-driven design and deep technical SEO audits.</p>
                 </div>
-                <div class="module">
-                    <i class="fas fa-database" style="font-size: 2rem; color: var(--blue-neon); margin-bottom: 15px;"></i>
+                <div class="cyber-card">
+                    <div class="scan-line"></div>
+                    <i data-feather="database" class="service-icon"></i>
                     <h3>DATA ANALYTICS & INSIGHTS</h3>
-                    <p>Leveraging Python and Big Data tools to extract actionable business insights from user metrics.</p>
+                    <p style="font-size: 0.9rem; margin-top: 10px;">Leveraging Python and Big Data tools to extract actionable business insights from complex user metrics.</p>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div id="aptitudes" class="tab-content">
-            <h2>> TECHNICAL_STRENGTHS</h2>
-            <div class="grid-3"> 
-                <div class="module">
-                    <h3>FRONTEND & BACKEND</h3>
-                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
-                        <span class="tag">React.js</span><span class="tag">TypeScript</span>
-                        <span class="tag">Java</span><span class="tag">Node.js</span>
-                        <span class="tag">Supabase</span><span class="tag">PostgreSQL</span>
-                        <span class="tag">SQL</span><span class="tag">Spring Boot</span>
+        <section id="aptitudes" class="page-module">
+            <h1 class="section-title">TECHNICAL_<span>STRENGTHS</span></h1>
+            
+            <div class="aptitude-item">
+                <div class="viewport">
+                    <img src="https://images.unsplash.com/photo-1587620962725-abab7fe55159?q=80&w=1000" alt="Code">
+                </div>
+                <div class="cyber-card">
+                    <h2>FRONTEND & BACKEND</h2>
+                    <div class="tag-cloud">
+                        <span class="tag">React.js</span> <span class="tag">TypeScript</span> <span class="tag">Java</span> <span class="tag">Node.js</span> <span class="tag">Supabase</span> <span class="tag">PostgreSQL</span> <span class="tag">Spring Boot</span>
                     </div>
                 </div>
-                <div class="module">
-                    <h3>MAKE WORKFLOWS</h3>
-                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
-                        <span class="tag">Automation Workflows</span><span class="tag">Machine Learning</span>
-                        <span class="tag">MCP Commands</span><span class="tag">RSS</span>
-                        <span class="tag">Google Tools)</span>
+                <div class="aptitude-legend">STATUS: OPTIMIZED<br>LEVEL: ARCHITECT<br>Mastery of server-side logic and reactive UI.</div>
+            </div>
+
+            <div class="aptitude-item">
+                <div class="viewport">
+                    <img src="make.png" alt="Workflows">
+                </div>
+                <div class="cyber-card">
+                    <h2>MAKE WORKFLOWS</h2>
+                    <div class="tag-cloud">
+                        <span class="tag">Automation</span> <span class="tag">Machine Learning</span> <span class="tag">MCP Commands</span> <span class="tag">RSS Integration</span>
                     </div>
                 </div>
-                <div class="module">
-                    <h3>AI & AUTOMATION</h3>
-                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
-                        <span class="tag">Claude Code</span><span class="tag">Machine Learning</span>
-                        <span class="tag">MCP Commands</span><span class="tag">Python</span>
-                        <span class="tag">GitHub Actions (CI/CD)</span>
+                <div class="aptitude-legend">STATUS: ACTIVE<br>EFFICIENCY: 98%<br>Complex logic flows and API orchestration.</div>
+            </div>
+
+            <div class="aptitude-item">
+                <div class="viewport">
+                    <img src="ai.png" alt="AI">
+                </div>
+                <div class="cyber-card">
+                    <h2>AI & AUTOMATION</h2>
+                    <div class="tag-cloud">
+                        <span class="tag">Claude Code</span> <span class="tag">Python</span> <span class="tag">GitHub Actions</span> <span class="tag">CI/CD</span>
                     </div>
                 </div>
-                <div class="module">
-                    <h3>BUSINESS SKILLS</h3>
-                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:10px;">
-                        <span class="tag">Technical SEO</span><span class="tag">UX Design</span>
-                        <span class="tag">Project Management</span><span class="tag">SaaS Strategy</span>
-                        <span class="tag">Agile (SCRUM)</span>
+                <div class="aptitude-legend">STATUS: OVERDRIVE<br>AI_INTEGRATION: 100%<br>Specialist in AI-assisted deployment cycles.</div>
+            </div>
+        </section>
+        <section id="portfolio" class="page-module">
+            <h1 class="section-title">PROJECT_<span>DEPLOYMENTS</span></h1>
+            <div class="service-grid">
+                
+                <div class="cyber-card">
+                    <div class="scan-line"></div>
+                    <img src="nikol.png" style="width: 100%; height: 180px; object-fit: cover; margin-bottom: 20px; border: 1px solid var(--accent-dim);">
+                    <h3>NIKOL</h3>
+                    <p style="font-size: 0.8rem; color: #aaa; margin: 10px 0; min-height: 40px;">Autonomous AI Operator for comprehensive website maintenance.</p>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button onclick="openModal('nikol')" class="tag" style="background: transparent; cursor: pointer; border: 1px solid var(--accent); display: flex; align-items: center; gap: 5px; color: var(--accent); font-family: var(--font-code);">
+                            <i data-feather="info" style="width: 14px; height: 14px;"></i> DETAILS
+                        </button>
+                        <a href="https://m3whub.es" target="_blank" class="tag" style="text-decoration: none; display: flex; align-items: center; gap: 5px; background: rgba(0, 255, 242, 0.1);">
+                            <i data-feather="external-link" style="width: 14px; height: 14px;"></i> VISIT SITE
+                        </a>
+                    </div>
+                </div>
+        
+                <div class="cyber-card">
+                    <div class="scan-line"></div>
+                    <img src="mindstead.png" style="width: 100%; height: 180px; object-fit: cover; margin-bottom: 20px; border: 1px solid var(--accent-dim);">
+                    <h3>MINDSTEAD.IO</h3>
+                    <p style="font-size: 0.8rem; color: #aaa; margin: 10px 0; min-height: 40px;">Wellness platform built with modular architecture and high UX focus.</p>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button onclick="openModal('mindstead')" class="tag" style="background: transparent; cursor: pointer; border: 1px solid var(--accent); display: flex; align-items: center; gap: 5px; color: var(--accent); font-family: var(--font-code);">
+                            <i data-feather="info" style="width: 14px; height: 14px;"></i> DETAILS
+                        </button>
+                        <a href="https://mindstead.io" target="_blank" class="tag" style="text-decoration: none; display: flex; align-items: center; gap: 5px; background: rgba(0, 255, 242, 0.1);">
+                            <i data-feather="external-link" style="width: 14px; height: 14px;"></i> VISIT SITE
+                        </a>
+                    </div>
+                </div>
+        
+                <div class="cyber-card">
+                    <div class="scan-line"></div>
+                    <img src="landofwave.png" style="width: 100%; height: 180px; object-fit: cover; margin-bottom: 20px; border: 1px solid var(--accent-dim);">
+                    <h3>LAND OF WAVES</h3>
+                    <p style="font-size: 0.8rem; color: #aaa; margin: 10px 0; min-height: 40px;">Tourism and adventure booking engine with integrated marketing funnel.</p>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button onclick="openModal('oceanfront')" class="tag" style="background: transparent; cursor: pointer; border: 1px solid var(--accent); display: flex; align-items: center; gap: 5px; color: var(--accent); font-family: var(--font-code);">
+                            <i data-feather="info" style="width: 14px; height: 14px;"></i> DETAILS
+                        </button>
+                        <a href="https://wave-makers-paradise.lovable.app" target="_blank" class="tag" style="text-decoration: none; display: flex; align-items: center; gap: 5px; background: rgba(0, 255, 242, 0.1);">
+                            <i data-feather="external-link" style="width: 14px; height: 14px;"></i> VISIT SITE
+                        </a>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div id="portfolio" class="tab-content">
-            <h2>> PROJECT_DEPLOYMENTS</h2>
-            <div class="grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px;">
-                <div class="module">
-                    <div class="project-frame"><img src="nikol.png" alt="Nikol"></div>
-                    <span class="tag">AI SaaS</span>
-                    <h3>nikol</h3>
-                    <p style="font-size: 0.9rem;">Autonomous AI Operator for comprehensive website maintenance.</p>
-                    <div class="btn-group">
-                        <button class="btn btn-details" onclick="openModal('modalNikol')">Details</button>
-                        <a href="https://m3whub.es" target="_blank" class="btn btn-visit">Visit Site</a>
-                    </div>
-                </div>
+    </main>
 
-                <div class="module">
-                    <div class="project-frame"><img src="mindstead.png" alt="Mindstead"></div>
-                    <span class="tag">Productivity</span>
-                    <h3>mindstead.io</h3>
-                    <p style="font-size: 0.9rem;">Wellness platform built with modular architecture.</p>
-                    <div class="btn-group">
-                        <button class="btn btn-details" onclick="openModal('modalMindstead')">Details</button>
-                        <a href="https://mindstead.io" target="_blank" class="btn btn-visit">Visit Site</a>
-                    </div>
-                </div>
-
-                <div class="module">
-                    <div class="project-frame"><img src="landofwave.png" alt="Land of Waves"></div>
-                    <span class="tag">Marketing</span>
-                    <h3>landofwaves.es</h3>
-                    <p style="font-size: 0.9rem;">Multi-page website for Surf Camps in Portugal.</p>
-                    <div class="btn-group">
-                        <button class="btn btn-details" onclick="openModal('modalWaves')">Details</button>
-                        <a href="https://wave-makers-paradise.lovable.app" target="_blank" class="btn btn-visit">Visit Site</a>
-                    </div>
-                </div>
-            </div>
+    <div id="projectModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(2, 4, 10, 0.95); z-index: 10000; justify-content: center; align-items: center; backdrop-filter: blur(10px);">
+        <div class="cyber-card" style="max-width: 600px; width: 90%; border: 1px solid var(--accent);">
+            <div id="modalBody"></div>
+            <button onclick="closeModal()" class="tag" style="margin-top: 25px; cursor: pointer; background: transparent; width: 100%;">[ RETURN_TO_SYSTEM ]</button>
         </div>
     </div>
 
-    <div id="modalNikol" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('modalNikol')">&times;</span>
-            <h2>NIKOL TECHNICAL SPECS</h2>
-            <ul class="feature-list">
-                <li><strong>Core Function:</strong> AI-as-a-Service for autonomous web management.</li>
-                <li><strong>Integration:</strong> Seamless connection with GitHub and Supabase.</li>
-                <li><strong>Control System:</strong> Safe changes through strict permission management and real-time logs.</li>
-                <li><strong>Tech Stack:</strong> Built on React, Node.js, and advanced scraping engines.</li>
-            </ul>
-        </div>
-    </div>
-
-    <div id="modalMindstead" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('modalMindstead')">&times;</span>
-            <h2>MINDSTEAD TECHNICAL SPECS</h2>
-            <ul class="feature-list">
-                <li><strong>Strategy:</strong> High-authority SEO architecture for global mental wellness audience.</li>
-                <li><strong>Content:</strong> Automated weekly publishing cycles powered by custom AI workflows.</li>
-                <li><strong>Architecture:</strong> Fully modular HTML/CSS/JS frontend designed for low latency.</li>
-                <li><strong>Data:</strong> Insights-driven design focused on user productivity metrics.</li>
-            </ul>
-        </div>
-    </div>
-
-    <div id="modalWaves" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('modalWaves')">&times;</span>
-            <h2>LAND OF WAVES SPECS</h2>
-            <ul class="feature-list">
-                <li><strong>Objetivo:</strong> Landing page optimizada para conversión de reservas.</li>
-                <li><strong>UX:</strong> Diseño fluido centrado en imágenes de alta calidad del campamento.</li>
-                <li><strong>Mobile First:</strong> Adaptabilidad total para usuarios que reservan desde el móvil.</li>
-                <li><strong>Performance:</strong> Tiempos de carga mínimos para mejorar el SEO local.</li>
-            </ul>
-        </div>
-    </div>
+    <nav class="mobile-hud">
+        <a href="#info" onclick="showPage('info')" style="color: var(--accent)"><i data-feather="terminal"></i></a>
+        <a href="#services" onclick="showPage('services')" style="color: var(--accent)"><i data-feather="cpu"></i></a>
+        <a href="#aptitudes" onclick="showPage('aptitudes')" style="color: var(--accent)"><i data-feather="zap"></i></a>
+        <a href="#portfolio" onclick="showPage('portfolio')" style="color: var(--accent)"><i data-feather="code"></i></a>
+    </nav>
 
     <script>
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('active');
+        feather.replace();
+
+        // DATA DE PROYECTOS
+        const projects = {
+            nikol: {
+                title: "NIKOL // AI_OPERATOR",
+                stack: "Python | OpenAI | Selenium | Cron",
+                desc: "Agente autónomo que monitoriza la salud técnica del sitio 24/7. Realiza auditorías SEO automáticas y ajustes de contenido basados en tendencias de búsqueda en tiempo real."
+            },
+            mindstead: {
+                title: "MINDSTEAD // SAAS_PLATFORM",
+                stack: "React | TypeScript | Supabase | Tailwind",
+                desc: "Plataforma de bienestar con arquitectura modular. Incluye gestión de bases de datos relacionales, autenticación segura y una interfaz reactiva de alto rendimiento."
+            },
+            oceanfront: {
+                title: "OCEANFRONT // BOOKING_ENGINE",
+                stack: "React | Node.js | Stripe | Google Maps API",
+                desc: "Motor de reservas completo para experiencias de aventura. Optimizado para dispositivos móviles con pasarela de pagos integrada y gestión de inventario en vivo."
+            }
+        };
+
+        function openModal(id) {
+            const p = projects[id];
+            const body = document.getElementById('modalBody');
+            body.innerHTML = `
+                <h2 style="font-family: var(--font-cyber); color: var(--accent); margin-bottom: 10px;">${p.title}</h2>
+                <p style="font-family: var(--font-code); font-size: 0.7rem; color: var(--accent); margin-bottom: 20px;">STACK: ${p.stack}</p>
+                <div style="height: 1px; background: var(--accent); opacity: 0.3; margin-bottom: 20px;"></div>
+                <p style="line-height: 1.6; color: #ccc;">${p.desc}</p>
+            `;
+            document.getElementById('projectModal').style.display = 'flex';
         }
 
-        function openTab(evt, tabName) {
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].classList.remove("active");
-                tabcontent[i].style.display = "none";
-            }
-            tablinks = document.getElementsByClassName("nav-link");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].classList.remove("active");
-            }
-            document.getElementById(tabName).style.display = "block";
-            setTimeout(() => { document.getElementById(tabName).classList.add("active"); }, 50);
-            evt.currentTarget.classList.add("active");
-
-            // Cerrar menú al hacer click en un link (en móvil)
-            if (window.innerWidth <= 900) {
-                toggleMenu();
-            }
+        function closeModal() {
+            document.getElementById('projectModal').style.display = 'none';
         }
 
-        function openModal(id) { document.getElementById(id).style.display = "block"; }
-        function closeModal(id) { document.getElementById(id).style.display = "none"; }
-        window.onclick = function(event) {
-            if (event.target.className === 'modal') { event.target.style.display = "none"; }
+        // 1. SOUND ENGINE (SUAVE - SINE WAVE)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playRelay() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'sine'; // Cambiado de square a sine para suavidad
+            osc.frequency.setValueAtTime(440, audioCtx.currentTime); // Frecuencia más armónica
+            osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.1);
+            
+            gain.gain.setValueAtTime(0.015, audioCtx.currentTime); // Volumen más bajo
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+            
+            gain.connect(audioCtx.destination);
+            osc.connect(gain);
+            osc.start(); 
+            osc.stop(audioCtx.currentTime + 0.1);
         }
+
+        document.querySelectorAll('a, .cyber-card, .aptitude-item, button').forEach(el => {
+            el.addEventListener('mouseenter', playRelay);
+        });
+
+        // 2. PAGE ROUTING SYSTEM
+        function showPage(pageId) {
+            document.querySelectorAll('.page-module').forEach(page => page.classList.remove('active'));
+            document.querySelectorAll('.nav-item a').forEach(link => link.classList.remove('active'));
+            
+            document.getElementById(pageId).classList.add('active');
+            const navLink = document.querySelector(`a[href="#${pageId}"]`);
+            if(navLink) navLink.classList.add('active');
+            document.body.className = 'sec-' + pageId;
+            
+            draw();
+            feather.replace();
+        }
+
+        // 3. CURSOR
+        const cursor = document.getElementById('custom-cursor');
+        document.addEventListener('mousemove', e => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // 4. MATRIX BACKGROUND
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const drops = Array(Math.floor(canvas.width / 16)).fill(1);
+        function draw() {
+            ctx.fillStyle = "rgba(2, 4, 10, 0.1)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--accent');
+            ctx.font = "14px JetBrains Mono";
+            drops.forEach((y, i) => {
+                const text = Math.random() > 0.5 ? "0" : "1";
+                ctx.fillText(text, i * 16, y * 16);
+                if (y * 16 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            });
+        }
+        setInterval(draw, 50);
+        window.onresize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
     </script>
-</body>
-</html>
